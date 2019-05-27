@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <title>円</title>
+    </head>
+    <body>
+        <canvas id="canvas" width="400" height="400"></canvas>
+        <script>
+            const Renderer = (function(){
+
+                const Renderer = function(){
+                    const canvas = document.getElementById("canvas");
+                    this.ctx = canvas.getContext("2d");
+                    this.width = canvas.width;
+                    this.height = canvas.height;
+                    this.t = 0;
+                };
+
+                Renderer.prototype.update = function(){
+                    this.t += 1;
+                    if(this.t === 360){
+                        this.t = 0;
+                    }
+                };
+
+                Renderer.prototype.draw = function(){
+                    this.ctx.clearRect(0,0,this.width,this.height);
+                    this.ctx.beginPath();
+                    this.ctx.arc(this.width / 2, this.height / 2, this.width / 3, 0, 2 * Math.PI);
+                    this.ctx.stroke();
+
+                    const ps = 2;
+                    const px1 = this.width /2 + Math.sin(this.t / 180 * Math.PI) * this.width / 3;
+                    const py1 = this.height /2 + Math.cos(this.t / 180 * Math.PI) * this.height / 3;
+
+                    const px2 = this.width /2 + Math.sin((this.t + 180) / 180 * Math.PI) * this.width / 3;
+                    const py2 = this.height /2 +Math.cos((this.t + 180) / 180 * Math.PI) * this.height / 3;
+
+                    this.ctx.beginPath();
+                    this.ctx.moveTo(px1, py1);
+                    this.ctx.lineTo(px2, py2);
+                    this.ctx.stroke();
+
+                    const px3 = this.width / 2 + Math.sin(this.t / 180 * Math.PI * 2) * this.width / 6;
+                    const py3 = this.height / 2 + this.height / 6 + Math.cos(this.t / 180 * Math.PI * 2) * this.height / 6;
+                    this.ctx.beginPath();
+                    this.ctx.arc(px3, py3, ps, 0, 2 * Math.PI);
+                    this.ctx.stroke();
+                };
+
+                Renderer.prototype.render = function() {
+                    this.update();
+                    this.draw();
+                    requestAnimationFrame(this.render.bind(this));
+                };
+
+                return Renderer;
+            })();
+
+            const renderer = new Renderer();
+            renderer.render();
+
+        </script>
+    </body>
+</html>
